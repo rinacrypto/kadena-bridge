@@ -1,0 +1,4 @@
+(begin-tx)
+;; On hold until diff-time can be verified by pact: https://github.com/kadena-io/pact/issues/821
+; (verify 'kbtc)
+(commit-tx)

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/themify-icons.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/theme-purple.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400%7CRaleway:100,400,300,500,600,700%7COpen+Sans:400,500,600' rel='stylesheet' type='text/css'>
+        <script>var clicky_site_ids || []; clicky_site_ids.push(101278917);</script>
+        <script async src="//static.getclicky.com/js"></script>
+    </head>
+    <body>
+
+        <div id="poaApp">
+
+            <site-nav></site-nav>
+		        <div class="main-container">
+		            <section>
+		                <div class="container">
+		                    <div class="feature">
+		                        <div class="row">
+		                            <div class="col-sm-8 col-sm-offset-2 p0">
+		                                <h1 class="large mb64 mb-xs-24">Proof of Assets</h1>
+                                    <p class="lead">Trust is the most important asset of a bridge.  We take this very seriously and will always be 100% transparent about the reserves backing our tokens.</p>
+                                    <table class="col-sm-12">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Address</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="padding-bottom:10px">
+                                                <td style="padding-right:10px">BTC  <br/> (custody)</td>
+                                                <td style="padding-right:10px"><a :href="btcLink">{{btcAddress}}</a></td>
+                                                <td>{{btcAmount}} (NOT REAL YET)</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-right:10px">kBTC <br/> (circulation)</td>
+                                                <!-- NOTE: change to real contract code -->
+                                                <td style="padding-right:10px"><a :href="kbtcLink">{{kbtcAddress}} contract</a></td>
+                                                <td>{{kbtcAmount}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+		                    </div>
+
+		                </div>
+
+		            </section>
+                <site-footer></site-footer>
+            </div>
+
+
+	          <script src="js/jquery.min.js"></script>
+            <script src="js/bootstrap.min.js"></script>
+            <script src="js/smooth-scroll.min.js"></script>
+            <script src="js/parallax.js"></script>
+            <script src="js/scripts.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/pact-lang-api@4.1.2/pact-lang-api-global.min.js"></script>
+	          <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	          <script src="js/main.js"></script>
+    </body>
+</html>

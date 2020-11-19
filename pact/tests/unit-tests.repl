@@ -1,0 +1,35 @@
+(begin-tx)
+
+(env-data
+  { "user1" : ["defe87de87beae0078fe480ee64d71b66a0e511cf9d7965c1cc4a89babb55d9b"]
+  , "user2" : ["ce46d1872b2ced7bc8e4151c42b05f71dd386a0f56989e6638d7f7ce4c93b90b"]
+  , "user3" : ["8dcc1d27a3dee3dd7ed662a76c2e7786167f287b2798ab3002c3fab66d56e062"]
+  })
+
+(env-keys
+  [ "defe87de87beae0078fe480ee64d71b66a0e511cf9d7965c1cc4a89babb55d9b"
+  , "ce46d1872b2ced7bc8e4151c42b05f71dd386a0f56989e6638d7f7ce4c93b90b"
+  , "8dcc1d27a3dee3dd7ed662a76c2e7786167f287b2798ab3002c3fab66d56e062"
+  ])
+
+(expect "start with no requests" [] (kbtc.get-buy-requests))
+(expect "start with no requests" [] (kbtc.get-sell-requests))
+
+(kbtc.buy-token "user1" (read-keyset "user1") "a")
+
+(expect "buy adds to requests list" 1 (length (kbtc.get-buy-requests)))
+; (expect "request added properly"
+;   [{"amount": 0.0,
+;     "expiration": "1970-01-02T00:00:00Z",
+;     "kda-account": "user1",
+;     "kda-guard": (read-keyset "user1"),
+;     "nonce": "a",
+;     "status": "pending"}]
+;   (kbtc.get-buy-requests))
+
+(kbtc.complete-buy )
+
+; (kbtc.sell-token "abc123" "b" "user1" )
+
+(commit-tx)
+(begin-tx)

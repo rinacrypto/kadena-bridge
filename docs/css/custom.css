@@ -1,0 +1,36 @@
+/****** PLACE YOUR CUSTOM STYLES HERE ******/
+
+.cursor-clickable {
+    cursor: pointer!important;
+}
+
+.invisible {
+    display: none;
+}
+
+button:disabled {
+    background-color: #666!important;
+    border-color: #666!important;
+    cursor: not-allowed;
+}
+
+.submit-error {
+    background: #ce3838;
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.submit-success {
+    background: #228B22;
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.pending-tx {
+    background: #999999;
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 24px;
+}

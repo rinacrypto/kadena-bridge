@@ -1,0 +1,14 @@
+(begin-tx)
+(env-data { "kbtc-admin" : ["admin"] })
+(env-keys ["admin"])
+
+(load "fungible-v2.pact")
+(load "kbtc.pact")
+(commit-tx)
+
+; test typechecking
+(load "tests/typecheck.repl")
+; test formal verification suite
+(load "tests/verify.repl")
+; unit tests
+(load "tests/unit-tests.repl")

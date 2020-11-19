@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/font-awesome-5.14-all.min.css" rel="stylesheet" type="text/css" media="all">
+        <link href="css/themify-icons.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/theme-purple.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400%7CRaleway:100,400,300,500,600,700%7COpen+Sans:400,500,600' rel='stylesheet' type='text/css'>
+        <script>var clicky_site_ids || []; clicky_site_ids.push(101278917);</script>
+        <script async src="//static.getclicky.com/js"></script>
+    </head>
+    <body>
+        <div id="mintApp">
+
+        <site-nav></site-nav>
+		    <div class="main-container">
+		        <section>
+		            <div class="container">
+		                <div class="feature">
+
+		                    <div v-bind:class="stage == 0 ? 'row' : 'invisible row'">
+		                        <div class="col-sm-6 col-sm-offset-3 p0">
+		                            <h1 class="large mb64 mb-xs-24">Get KTokens</h1>
+		                                <div class="row">
+                                        <div class="input-with-label text-left">
+                                            <span>Token Type</span>
+		                                        <div class="select-option col-sm-12 p0">
+		                                            <i class="ti-angle-down"></i>
+		                                            <select v-model="tokenType" name="currency">
+		                                                <option v-for="(v,k) in tokens" :value="k">K{{k}}</option>
+		                                            </select>
+		                                        </div>
+		                                    </div>
+		                                </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6 p0">
+                                            <div class="input-with-label text-left">
+                                                <span>Min Transaction Size</span>
+                                                <div>{{txMin}} {{tokenType}}</div>
+                                                <br/>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 p0">
+                                            <div class="input-with-label text-left">
+                                                <span>Fee</span>
+                                                <div>{{txFeePercent}}%</div>
+                                                <br/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 p0">
+                                            <div class="input-with-label text-left">
+                                                <span>Public Key or TxBuilder on Kadena</span>
+                                                <txb-input v-model="txb"></txb-input>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <accordion title="Advanced">
+                                            <div class="col-sm-12">
+                                                <br/>
+                                                <div class="row">
+                                                    <div class="col-sm-12 p0">
+                                                        <div class="input-with-label text-left">
+                                                            <span>Node Address</span>
+                                                            <input v-model="node" type="text" name="node-address">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- TODO This chain list should be dynamically queried from the node
+                                                <div class="row">
+                                                    <div class="input-with-label text-left">
+                                                        <span>Chain(s) where tokens will reside</span>
+                                                        <div class="select-option col-sm-12 p0">
+                                                            <i class="ti-angle-down"></i>
+                                                            <select name="distribution">
+                                                                <option selected="selected" value="all">All Chains</option>
+                                                                <option value="0">Chain 0</option>
+                                                                <option value="1">Chain 1</option>
+                                                                <option value="2">Chain 2</option>
+                                                                <option value="3">Chain 3</option>
+                                                                <option value="4">Chain 4</option>
+                                                                <option value="5">Chain 5</option>
+                                                                <option value="6">Chain 6</option>
+                                                                <option value="7">Chain 7</option>
+                                                                <option value="8">Chain 8</option>
+                                                                <option value="9">Chain 9</option>
+                                                                <option value="10">Chain 10</option>
+                                                                <option value="11">Chain 11</option>
+                                                                <option value="12">Chain 12</option>
+                                                                <option value="13">Chain 13</option>
+                                                                <option value="14">Chain 14</option>
+                                                                <option value="15">Chain 15</option>
+                                                                <option value="16">Chain 16</option>
+                                                                <option value="17">Chain 17</option>
+                                                                <option value="18">Chain 18</option>
+                                                                <option value="19">Chain 19</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+		                                            </div>
+                                                -->
+		                                        </div>
+		                                    </accordion>
+                                    </div>
+
+                                    <div v-if="errMsg != null" class="row submit-error">
+                                        <div class="col-sm-12 p0">
+                                            <div>{{errMsg}}</div>
+                                        </div>
+                                    </div>
+
+		                                <div class="row">
+		                                    <div class="col-sm-12 p0">
+                                            <button type="submit"
+                                                    v-on:click="prepareMintRequest()"
+                                                    v-bind:class="txb == null ? 'disabled' : ''"
+                                                    v-bind:disabled="txb == null">Prepare Token Mint Request</button>
+		                                    </div>
+		                                </div>
+                            </div>
+                        </div> <!-- Stage 0 component -->
+
+		                    <div v-bind:class="stage == 1 ? 'row' : 'invisible row'">
+		                        <div class="col-sm-6 col-sm-offset-3 p0 lead">
+		                            <h1 class="large mb64 mb-xs-24">Get KTokens</h1>
+                                <p>Your token mint request is ready to be sent.</p>
+                                <dl>
+                                    <dt>Fee</dt>
+                                    <dd>{{txFeePercent}}%</dd>
+
+                                    <dt>Min Transaction Amount</dt>
+                                    <dd>{{txMin}} {{tokenType}}</dd>
+
+                                    <dt>Your K{{tokenType}} will be owned by</dt>
+                                    <dd style="margin-left: 12px;">
+                                        <strong>Account</strong>: {{txb == null ? '' : txb.account}}
+                                        <br/>
+                                        <strong>Keys</strong>: {{txb == null ? '' : txb.keyset.keys}}
+                                        <br/>
+                                        <strong>Predicate</strong>: {{txb == null ? '' : txb.keyset.pred}}
+                                    </dd>
+
+                                    <dt>Transaction Note (also called a nonce)</dt>
+                                    <dd>{{requestId}}</dd>
+                                </dl>
+                                <p><strong>IMPORTANT</strong>: If you do not
+                                include the above note in your BTC transaction
+                                exactly as it appears here or your transaction
+                                amount is less than the minimum, your KTokens
+                                will not be minted!</p>
+
+                                <p><a href="mailto:admin@example.com">Contact us</a> for volume rates.</p>
+		                            <div class="row">
+		                                <div class="col-sm-12">
+		                                    <button v-on:click="sendMintRequest()" type="submit">Send Mint Request</button>
+		                                </div>
+		                            </div>
+                            </div>
+                        </div> <!-- Stage 1 component -->
+
+		                    <div v-bind:class="stage == 2 ? 'row' : 'invisible row'">
+		                        <div class="col-sm-6 col-sm-offset-3 p0 lead">
+		                            <h1 class="large mb64 mb-xs-24">Pay for Tokens</h1>
+
+                                <p>Your token mint request has been sent.</p>
+
+                                <p>Now transfer your {{tokenType}} to the following address: {{sendToAddress}}</p>
+
+                                <dl>
+                                    <dt>Fee</dt>
+                                    <dd>{{txFeePercent}}%</dd>
+
+                                    <dt>Min Transaction Amount</dt>
+                                    <dd>{{txMin}} {{tokenType}}</dd>
+
+                                    <dt>Transaction Note (also called a nonce)</dt>
+                                    <dd>{{requestId}}</dd>
+                                </dl>
+                                <p><strong>IMPORTANT</strong>: If you do not
+                                include the above note in your BTC transaction
+                                exactly as it appears here or your transaction
+                                amount is less than the minimum, your KTokens
+                                will not be minted!</p>
+
+		                            <div class="row">
+		                                <div class="col-sm-12">
+		                                    <button v-on:click="location.reload()" type="submit">Mint More Tokens!</button>
+		                                </div>
+		                            </div>
+
+                            </div>
+                        </div> <!-- Stage 1 component -->
+
+		                </div>
+
+		            </div>
+
+		        </section>
+            <site-footer></site-footer>
+        </div>
+        </div>
+
+	      <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/smooth-scroll.min.js"></script>
+        <script src="js/parallax.js"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/pact-lang-api@4.1.2/pact-lang-api-global.min.js"></script>
+	      <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	      <script src="js/main.js"></script>
+    </body>
+</html>

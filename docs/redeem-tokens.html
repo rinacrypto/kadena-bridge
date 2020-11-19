@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/font-awesome-5.14-all.min.css" rel="stylesheet" type="text/css" media="all">
+        <link href="css/themify-icons.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/theme-purple.css" rel="stylesheet" type="text/css" media="all" />
+        <link href="css/custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400%7CRaleway:100,400,300,500,600,700%7COpen+Sans:400,500,600' rel='stylesheet' type='text/css'>
+
+        <script>var clicky_site_ids || []; clicky_site_ids.push(101278917);</script>
+        <script async src="//static.getclicky.com/js"></script>
+    </head>
+    <body>
+
+        <div id="redeemApp">
+
+            <site-nav></site-nav>
+		        <div class="main-container">
+		            <section>
+		                <div class="container">
+		                    <div class="feature">
+
+                            <div class="row">
+		                            <div class="col-sm-6 col-sm-offset-3 p0">
+		                                <h1 class="large mb64 mb-xs-24">Redeem KTokens</h1>
+
+		                                <div v-bind:class="stage == 0 ? '' : 'invisible'">
+		                                    <div class="row">
+                                            <div class="input-with-label text-left">
+                                                <span>Token Type</span>
+		                                            <div class="select-option col-sm-12 p0">
+		                                                <i class="ti-angle-down"></i>
+		                                                <select v-model="tokenType" name="currency">
+		                                                    <option v-for="(v,k) in tokens" :value="k">K{{k}}</option>
+		                                                </select>
+		                                            </div>
+		                                        </div>
+		                                    </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 p0">
+                                                <div class="input-with-label text-left">
+                                                    <span>Min Transaction Size</span>
+                                                    <div>{{txMin}} {{tokenType}}</div>
+                                                    <br/>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 p0">
+                                                <div class="input-with-label text-left">
+                                                    <span>Fee</span>
+                                                    <div>{{txFeePercent}}%</div>
+                                                    <br/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+		                                    <div class="row">
+		                                        <div class="col-sm-12 p0">
+                                                <div class="input-with-label text-left">
+                                                    <span>Sending K{{tokenType}} Account Name</span>
+		                                                <input v-model="sendingAccount" type="text" name="ktoken-account" @change="getAccount">
+                                                </div>
+		                                        </div>
+		                                    </div>
+
+                                        <div v-if="errMsg != null" class="row submit-error">
+                                            <div class="col-sm-12 p0">
+                                                <div>{{errMsg}}</div>
+                                            </div>
+                                        </div>
+
+		                                    <div class="row">
+		                                        <div class="col-sm-12 p0">
+                                                <div class="input-with-label text-left">
+                                                    <span>Receiving {{tokenType}} Address</span>
+		                                                <btc-address-input v-model="receivingAddress" @change="prepareRedeem"></btc-address-input>
+                                                </div>
+		                                        </div>
+		                                    </div>
+
+		                                    <div class="row">
+		                                        <div class="col-sm-11 p0">
+                                                <div class="input-with-label text-left">
+                                                    <span>Amount</span>
+		                                                <input v-model="amount" type="text" name="amount" @change="prepareRedeem">
+                                                </div>
+		                                        </div>
+		                                        <div class="col-sm-1 p0">
+                                                <div class="input-with-label text-center" style="padding-top:24px;">
+                                                  <button
+                                                          type="submit"
+                                                          v-on:click="maxAmount()"
+                                                          v-bind:disabled="accountDetails === null">Max</button>
+                                                </div>
+		                                        </div>
+		                                    </div>
+
+                                        <div v-if="accountDetails != null">
+                                          <div class="row">
+                                              <div class="input-with-label text-left">
+                                                  <span>Available Balance</span>
+                                                  <input v-model="accountDetails.balance" type="text" name="amount" v-bind:disabled="true">
+  		                                        </div>
+  		                                    </div>
+
+                                          <!-- <div v-if="isKeysetAmbiguous(accountDetails.guard)"> -->
+                                              <div class="row">
+                                                  <div class="input-with-label text-left">
+                                                      <span>Keys to Sign With</span>
+                                                  </div>
+                                              </div>
+
+                                              <div v-for="(v,k) in accountDetails.guard.keys" class="row">
+                                                  <div class="col-sm-1">
+                                                      <input class="checkbox p0" type="checkbox" :value="v" v-model="selectedKeys" @change="prepareRedeem">
+                                                  </div>
+                                                  <div class="col-sm-11">
+                                                      <span>{{v}}</span>
+                                                  </div>
+                                              </div>
+  		                                    <!-- </div> -->
+
+                                          <br/>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <accordion title="Advanced">
+                                                <div class="col-sm-12">
+                                                    <br/>
+                                                    <div class="row">
+                                                        <div class="col-sm-12 p0">
+                                                            <div class="input-with-label text-left">
+                                                                <span>Node Address</span>
+                                                                <input v-model="node" type="text" name="node-address">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+		                                            </div>
+		                                        </accordion>
+                                        </div>
+
+		                                    <div class="row">
+		                                        <div class="col-sm-12 p0">
+                                                <button type="submit"
+                                                        v-on:click="incStage()"
+                                                        v-bind:class="txReady() ? '' : 'disabled'"
+                                                        v-bind:disabled="!txReady()">Review Redeem</button>
+		                                        </div>
+		                                    </div>
+                                    </div> <!-- Stage 0 component -->
+
+
+		                                <div v-bind:class="stage == 1 ? '' : 'invisible'">
+
+                                      <p>Your token redeem request is ready to be sent.</p>
+                                      <dl>
+                                          <dt>Fee</dt>
+                                          <dd>{{txFeePercent}}%</dd>
+
+                                          <dt>Your K{{tokenType}} will be converted to BTC:</dt>
+                                          <dd style="margin-left: 12px;">
+                                              <strong>K{{tokenType}} Sending Account</strong>: {{sendingAccount}}
+                                          </dd>
+                                          <dd style="margin-left: 12px;">
+                                              <strong>{{tokenType}} Receiving Account</strong>: {{receivingAddress}}
+                                          </dd>
+                                          <dd style="margin-left: 12px;">
+                                              <strong>Amount</strong>: {{amount}}
+                                          </dd>
+                                      </dl>
+
+
+                                        <div class="row">
+                                            <div class="input-with-label text-left">
+                                                <span>Transaction Hash</span>
+                                                <input v-model="hash" type="text" name="amount" v-bind:disabled="true">
+                                            </div>
+                                        </div>
+                                        <div v-for="(v,k) in selectedKeys">
+                                          <div class="row">
+                                              <div class="input-with-label text-left">
+                                                  <span>Private Key or Signature {{ v.substring(0,4) }}...{{ v.substring(v.length-4) }} </span>
+                                                  <input v-model="sigs[k]" type="text">
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                        <div v-if="!localReady() && this.sigs.length > 0 && localStatus === null" class="row submit-error">
+                                            <div class="col-sm-12 p0">
+                                                <div>Wrong format for signature or private key!</div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="!localStatus">
+                                          <div class="row">
+  		                                        <div class="col-sm-12 p0">
+                                                  <button type="submit"
+                                                          v-on:click="localRedeem()"
+                                                          v-bind:class="localReady() ? '' : 'disabled'"
+                                                          v-bind:disabled="!localReady()">Preview Redeem</button>
+  		                                        </div>
+  		                                    </div>
+                                        </div>
+
+                                        <div v-if="localStatus === 'failure'">
+
+                                          <div class="row submit-error">
+                                              <div class="col-sm-12 p0">
+                                                  <div>Transaction Unsucessful</div>
+                                                  <br />
+                                                  <div>Please check the error message and resubmit the form:</div>
+                                                  <br />
+                                                  <div>{{errMsg}}</div>
+                                                  <br />
+                                                  <div>Then click the button below to renter information</div>
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                        <div v-if="localStatus === 'success'">
+
+                                          <div class="row submit-success">
+                                              <div class="col-sm-12 p0">
+                                                  <div>Transaction Preview Successfull!</div>
+                                                  <br />
+                                                  <div>Please double check your {{tokenType}} address:</div>
+                                                  <br />
+                                                  <div>{{receivingAddress}}</div>
+                                                  <br />
+                                                  <div>Then click the button below to submit it to the blockchain</div>
+                                              </div>
+                                          </div>
+
+                                          <div class="row">
+  		                                        <div class="col-sm-12 p0">
+                                                  <button type="submit"
+                                                          v-on:click="sendRedeem()">Send Redeem</button>
+  		                                        </div>
+  		                                    </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                          <div class="col-sm-12 p0">
+                                              <button type="submit"
+                                                      v-on:click="decStage"
+                                                      v-bind:disabled="localStatus === 'success'">Edit Transaction Details</button>
+                                          </div>
+                                        </div>
+
+                                        <p><strong>IMPORTANT</strong>: Once you sign this transaction
+                                        it is not reversible. Please make sure the BTC address provided
+                                        is correct.</p>
+
+                                    </div> <!-- Stage 1 component -->
+
+
+                                    <div v-bind:class="stage == 2 ? '' : 'invisible'">
+
+                                      <p>Your token redeem request has been sent to Kadena mainnet.</p>
+
+
+                                            <div v-if="sendStatus === 'pending'">
+                                              <div class="row pending-tx">
+                                                  <div class="col-sm-12 p0">
+                                                    <div>Please wait as your transaction is being mined....</div>
+                                                    <br />
+                                                    <div>Your Kadena tx id is:</div>
+                                                    <br />
+                                                    <div>{{reqKey}}</div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <div v-if="sendStatus === 'success'">
+                                              <div class="row submit-success">
+                                                  <div class="col-sm-12 p0">
+                                                    <div>Transaction successful!!</div>
+                                                    <br />
+                                                    <div>Your link request id is:</div>
+                                                    <br />
+                                                    <div>{{reqId}}</div>
+                                                    <br />
+                                                    <div>You can also check out your transaction in the <a href="explorer.chainweb.com">block explorer</a></div>
+                                                </div>
+                                              </div>
+                                            </div>
+
+
+                                            <div v-if="sendStatus === 'failure'">
+                                              <div class="row submit-error">
+                                                  <div class="col-sm-12 p0">
+                                                    <div>Something went wrong with your transaction....</div>
+                                                    <br />
+                                                    <div>Please check it out in the <a href="explorer.chainweb.com">block explorer</a></div>
+                                                  </div>
+                                              </div>
+                                            </div>
+
+
+                                    </div> <!-- Stage 2 component -->
+                                </div>
+                            </div>
+
+		                    </div>
+
+		                </div>
+
+		            </section>
+                <site-footer></site-footer>
+            </div>
+
+
+	          <script src="js/jquery.min.js"></script>
+            <script src="js/bootstrap.min.js"></script>
+            <script src="js/smooth-scroll.min.js"></script>
+            <script src="js/parallax.js"></script>
+            <script src="js/scripts.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/pact-lang-api@4.1.2/pact-lang-api-global.min.js"></script>
+	          <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	          <script src="js/main.js"></script>
+    </body>
+</html>
